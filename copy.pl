@@ -3,17 +3,12 @@
 use File::Copy;
 use strict;
 use warnings;
+require "init.pl";
  
 sub write_report {
  	my ($text, $file) = @_;
 
  	my $filename = "archive/data/$file";
-
-	if(! -e $filename) {
-	    #Create the file if it doesn't exist
-	    open my $fc, ">", $filename;
-	    close $fc;
-	}
 
 	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
 	my $a = 0;
@@ -63,29 +58,25 @@ sub copy_file {
 	copy($original_file, $new_file) or die "The copy operation failed: $!";
 }
 
+init();
+
 if( $#ARGV < 0){
 	print "no arguments\n";
 }else{
 	my $arg = "$ARGV[0]";
 
-	if (-d "archive") {
-	    print "folder archive exist\n";
-	}else{
-		mkdir "archive";
-		print "created folder atchive\n";
-	}
-	if (-d "archive/data") {
-	    print "folder data exist\n";
-	}else{
-		mkdir "archive/data";
-		print "created folder data\n";
-	}
 	if (-d "archive/$arg") {
 	    print "folder $arg exist\n";
 	}else{
-		mkdir "archive/$arg";
+		mkdir ("archive/$arg") or die "The mkdir operation failed: $!";;
 		print "created folder archive/$arg\n";
 	}	
+
+
+
+
+
+	
 
 	my $datestring = localtime();
 	my $new_dir = "archive/$arg/$datestring";

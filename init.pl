@@ -27,7 +27,7 @@ sub write_report {
 }
 
 sub copy_folder {
-    my ($from_dir, $to_dir, $date) = @_;
+    my ($from_dir, $to_dir, $to_dir2, $date) = @_;
     opendir my($dh), $from_dir or die "Could not open dir '$from_dir': $!";
 
     for my $entry (readdir $dh) {    
@@ -36,9 +36,11 @@ sub copy_folder {
         
         my $source = "$from_dir/$entry";
         my $destination = "$to_dir/$entry";
+        my $destination2 = "$to_dir2/$entry";
         if (-d $source) {
         	create_folder($destination);
-            copy_folder($source, $destination, $date);
+        	create_folder($destination2);
+            copy_folder($source, $destination, $destination2, $date);
         } else {
         	my $regex = $source =~ m/work\//;
         	if( -e $destination) {
@@ -47,7 +49,8 @@ sub copy_folder {
 	            open (my $fc, ">", $destination) or die "Could not create file '$destination' $!";
 		    	close $fc;
 	            write_report("$'\n\n$date  - created", $destination);			
-    		}
+    		};
+    		create_folder($destination2);
         }
     }
     closedir $dh;
@@ -65,9 +68,11 @@ sub create_folder {
 	}
 }
 
-create_folder("archive");
-create_folder("archive/report");
-my $date = localtime();		
-copy_folder("work","archive/report", $date);
-
+sub init {
+	create_folder("archive");
+	create_folder("archive/report");
+	my $date = localtime();		
+	copy_folder("work","archive/report", "archive", $date);
+}
+1;
  

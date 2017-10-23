@@ -4,7 +4,7 @@ use File::Copy;
 use strict;
 use warnings;
  
-sub write_report {
+sub write_report_i {
  	my ($text, $filename) = @_;
 
 	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
@@ -26,7 +26,7 @@ sub write_report {
 	close $ft;
 }
 
-sub copy_folder {
+sub copy_folder_i {
     my ($from_dir, $to_dir, $to_dir2, $date) = @_;
     opendir my($dh), $from_dir or die "Could not open dir '$from_dir': $!";
 
@@ -40,15 +40,15 @@ sub copy_folder {
         if (-d $source) {
         	create_folder($destination);
         	create_folder($destination2);
-            copy_folder($source, $destination, $destination2, $date);
+            copy_folder_i($source, $destination, $destination2, $date);
         } else {
         	my $regex = $source =~ m/work\//;
         	if( -e $destination) {
-			    print "$' exist\n";
+			    print "file $' exist\n";
 			}else{
 	            open (my $fc, ">", $destination) or die "Could not create file '$destination' $!";
 		    	close $fc;
-	            write_report("$'\n\n$date  - created", $destination);			
+	            write_report_i("$'\n\n$date  - created", $destination);			
     		};
     		create_folder($destination2);
         }
@@ -72,7 +72,7 @@ sub init {
 	create_folder("archive");
 	create_folder("archive/report");
 	my $date = localtime();		
-	copy_folder("work","archive/report", "archive", $date);
+	copy_folder_i("work","archive/report", "archive", $date);
 }
 1;
  

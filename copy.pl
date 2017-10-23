@@ -8,16 +8,13 @@ require "init.pl";
 sub write_report {
  	my ($text, $file) = @_;
 
- 	my $filename = "archive/data/$file";
+ 	my $filename = "archive/report/$file";
 
 	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
-	my $a = 0;
 	my @data = ();
 
 	while (my $row = <$fh>) {
-		$a = $a + 1;
 	  	chomp $row;
-	  	print "$a $row\n";
 		push(@data, "$row\n");
 	}	
 	close $fh;
@@ -27,7 +24,6 @@ sub write_report {
 	open(my $ft, '>', $filename) or die "Could not open file '$filename' $!";
 	print $ft @data;
 	close $ft;
-	print "done\n";	
 }
 
 sub copy_folder {
@@ -45,8 +41,8 @@ sub copy_folder {
             copy_folder($source, $destination, $date);
         } else {
             copy($source, $destination) or die "copy failed: $!";
-            #write_report("$datestring  - copy $arg", $arg);
-            print "---- $source\n";
+            my $regex = $source =~ m/work\//;
+            write_report("$date  - created copy", $'); 
         }
     }
     closedir $dh;
@@ -64,43 +60,25 @@ if( $#ARGV < 0){
 	print "no arguments\n";
 }else{
 	my $arg = "$ARGV[0]";
-
-	if (-d "archive/$arg") {
-	    print "folder $arg exist\n";
-	}else{
-		mkdir ("archive/$arg") or die "The mkdir operation failed: $!";;
-		print "created folder archive/$arg\n";
-	}	
-
-
-
-
-
 	
-
 	my $datestring = localtime();
 	my $new_dir = "archive/$arg/$datestring";
-
-	if ($arg =~ /\//){
-		$arg =~ /^(.*)\//;
-		print "ooooooooooooooo $1\n";
-	} 
-
-
-	mkdir $new_dir or die "Not created $new_dir: $!";
+	create_folder($new_dir);	
 
 	my $from = "work/$arg";
 
-	if(-d "work/$arg"){
+	if(-d "work/$arg"){ #if $arg is folder
 		copy_folder($from, $new_dir, $datestring);
 		print "copied folder $arg in $new_dir\n";
-	}else{
-		print "$new_dir !!!!!!\n";
-		copy_file($from, $new_dir);
-		print "copied file $arg in $new_dir\n";
-
-		write_report("$datestring  - copy $arg", $arg);
 	}
+
+	#else{#if $arg is file
+	#	print "$new_dir !!!!!!\n";
+	#	copy_file($from, $new_dir);
+	#	print "copied file $arg in $new_dir\n";
+
+	#	write_report("$datestring  - copy $arg", $arg);
+	#}
 }
 
 

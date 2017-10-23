@@ -4,16 +4,12 @@ use File::Copy;
 use strict;
 use warnings;
  
-sub read_history {
+sub delete_history {
  	my ($filename) = @_;
 
-	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
-
-	while (my $row = <$fh>) {
-	  	chomp $row;
-		print "$row\n";
-	}	
-	close $fh;	
+	open(my $ft, '>', $filename) or die "Could not open file '$filename' $!";
+	print $ft "";
+	close $ft;
 }
 
 if( $#ARGV < 0){
@@ -23,7 +19,7 @@ if( $#ARGV < 0){
 	my $dist = "archive/report/$arg";
 
 	if( -f $dist) {
-    	read_history($dist);
+    	delete_history($dist);
 	}else{
 		print "It's not a file\n";
 	}

@@ -43,6 +43,7 @@ sub copy_folder {
             copy($source, $destination) or die "copy failed: $!";
             my $regex = $source =~ m/work\//;
             write_report("$date  - created copy", $'); 
+            write_report("$'/$date - created file copy", "all_data");	
         }
     }
     closedir $dh;
@@ -70,11 +71,13 @@ if( $#ARGV < 0){
 	if(-d "work/$arg"){ #if $arg is folder
 		copy_folder($from, $new_dir, $datestring);
 		print "copied folder $arg in $new_dir\n";
+		write_report("$arg/$datestring - created folder copy", "all_data");
 	}
 
 	else{#if $arg is file
 		copy_file($from, $new_dir);
 		print "copied file $arg in $new_dir\n";
 		write_report("$datestring  - created copy", $arg);
+		write_report("$arg/$datestring - created file copy", "all_data");
 	}
 }

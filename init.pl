@@ -8,13 +8,10 @@ sub write_report_i {
  	my ($text, $filename) = @_;
 
 	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
-	my $a = 0;
 	my @data = ();
 
 	while (my $row = <$fh>) {
-		$a = $a + 1;
 	  	chomp $row;
-	  	print "$a $row\n";
 		push(@data, "$row\n");
 	}	
 	close $fh;
@@ -48,7 +45,7 @@ sub copy_folder_i {
 			}else{
 	            open (my $fc, ">", $destination) or die "Could not create file '$destination' $!";
 		    	close $fc;
-	            write_report_i("$'\n\n$date  - created", $destination);			
+	            write_report_i("$'\n\n$date  - created", $destination);		
     		};
     		create_folder($destination2);
         }
@@ -72,6 +69,15 @@ sub init {
 	create_folder("archive");
 	create_folder("archive/report");
 	my $date = localtime();		
+
+	if( -e "archive/report/all_data") {
+	    print "file archive/report/all_data exist\n";
+	}else{
+		open (my $fc, ">", "archive/report/all_data") or die "Could not create file 'archive/report/all_data' !";
+		close $fc;
+		write_report_i("all_data\n\nall_data $date - created\n", "archive/report/all_data");
+	}
+
 	copy_folder_i("work","archive/report", "archive", $date);
 }
 1;

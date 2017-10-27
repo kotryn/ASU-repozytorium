@@ -3,30 +3,9 @@
 use File::Copy;
 use strict;
 use warnings;
- 
-sub write_report {
- 	my ($text, $file) = @_;
-
- 	my $filename = "archive/report/$file";
-
-	open(my $fh, '<', $filename) or die "Could not open file '$filename' $!";
-	my @data = ();
-
-	while (my $row = <$fh>) {
-	  	chomp $row;
-		push(@data, "$row\n");
-	}	
-	close $fh;
-
-	push(@data, "$text\n");
-
-	open(my $ft, '>', $filename) or die "Could not open file '$filename' $!";
-	print $ft @data;
-	close $ft;
-}
 
 sub copy_folder {
-    my ($from_dir, $to_dir, $date) = @_;
+    my ($from_dir, $to_dir) = @_;
     opendir my($dh), $from_dir or die "Could not open dir '$from_dir': $!";
 
     for my $entry (readdir $dh) {    
@@ -37,38 +16,52 @@ sub copy_folder {
         my $destination = "$to_dir/$entry";
         if (-d $source) {
             mkdir $destination or die "mkdir '$destination' failed: $!" if not -e $destination;
-            copy_folder($source, $destination, $date);
+            copy_folder($source, $destination);
         } else {
             copy($source, $destination) or die "copy failed: $!";
-            my $regex = $source =~ m/work\//;
-            write_report("$date  - created copy", $'); 
         }
     }
     closedir $dh;
     return;
 }
 
-sub copy_file {
-	my ($original_file, $new_file) = @_;
-	copy($original_file, $new_file) or die "The copy operation failed: $!";
-}
-
 if( $#ARGV < 0){
 	print "no arguments\n";
 }else{
+	my $i = 1;
 	my $arg = "$ARGV[0]";
-	
-
-	#my $from = "work/$arg";
-
-	if(-d "archive/$arg"){ #if $arg is folder
-		#copy_folder($from, $new_dir, $datestring);
-		print "archive/$arg <- folder\n";
+	while($i < $#ARGV+1){
+		$arg = "$arg $ARGV[$i]";
+		$i = $i + 1;
+	}
+	my $source = "$ARGV[0]";
+	my @fields = split(/\//, $source);
+	my $size = @fields;
+	$i = 1;
+	my $arg2 = "$fields[0]";
+	while($i < $size-1){
+		$arg2 = "$arg2/$fields[$i]";
+		$i = $i + 1;
 	}
 
-	else{#if $arg is file
-		#copy_file($from, $new_dir);
-		print "archive/$arg <- file\n";
-		#write_report("$datestring  - created copy", $arg);
+	if(-f "work/$arg2"){
+		@fields = split(/\//, "$arg2");
+		$size = @fields;
+		$i = 0;
+		$arg2 = '';
+		while($i < $size-1){
+			$arg2 = "$arg2/$fields[$i]";
+			$i = $i + 1;
+		}
+		print "done\n";
+		copy_folder("archive/$arg", "work$arg2");
+
 	}
+	elsif(-d "work/$arg2"){
+		copy_folder("archive/$arg", "work/$arg2");
+		print "done\n";
+	}else{
+		print "incorect data\n";
+	}		
+
 }

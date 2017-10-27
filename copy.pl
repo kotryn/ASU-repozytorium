@@ -43,7 +43,6 @@ sub copy_folder {
             copy($source, $destination) or die "copy failed: $!";
             my $regex = $source =~ m/work\//;
             write_report("$date  - created copy", $'); 
-            write_report("$'/$date - created file copy", "all_data");	
         }
     }
     closedir $dh;
@@ -61,23 +60,29 @@ if( $#ARGV < 0){
 	print "no arguments\n";
 }else{
 	my $arg = "$ARGV[0]";
-	
-	my $datestring = localtime();
-	my $new_dir = "archive/$arg/$datestring";
-	create_folder($new_dir);	
-
-	my $from = "work/$arg";
 
 	if(-d "work/$arg"){ #if $arg is folder
+		my $datestring = localtime();
+		my $new_dir = "archive/$arg/$datestring";
+		create_folder($new_dir);	
+		my $from = "work/$arg";
+
 		copy_folder($from, $new_dir, $datestring);
 		print "copied folder $arg in $new_dir\n";
 		write_report("$arg/$datestring - created folder copy", "all_data");
 	}
 
-	else{#if $arg is file
+	elsif(-f "work/$arg"){#if $arg is file
+		my $datestring = localtime();
+		my $new_dir = "archive/$arg/$datestring";
+		create_folder($new_dir);	
+		my $from = "work/$arg";
+
 		copy_file($from, $new_dir);
 		print "copied file $arg in $new_dir\n";
 		write_report("$datestring  - created copy", $arg);
 		write_report("$arg/$datestring - created file copy", "all_data");
+	}else{
+		print "incorrect data\n";
 	}
 }

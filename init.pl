@@ -41,7 +41,7 @@ sub copy_folder_i {
         } else {
         	my $regex = $source =~ m/work\//;
         	if( -e $destination) {
-			    print "file $' exist\n";
+			    #print "file $' exist\n";
 			}else{
 	            open (my $fc, ">", $destination) or die "Could not create file '$destination' $!";
 		    	close $fc;
@@ -58,7 +58,7 @@ sub create_folder {
 	my ($dir) = @_;
 
 	if (-d $dir) {
-	    print "folder $dir exist\n";
+	    #print "folder $dir exist\n";
 	}else{
 		mkdir $dir or die "mkdir '$dir' failed: $!" if not -e $dir;
 		print "created folder $dir\n";
@@ -71,7 +71,7 @@ sub init {
 	my $date = localtime();		
 
 	if( -e "archive/report/all_data") {
-	    print "file archive/report/all_data exist\n";
+	    #print "file archive/report/all_data exist\n";
 	}else{
 		open (my $fc, ">", "archive/report/all_data") or die "Could not create file 'archive/report/all_data' !";
 		close $fc;

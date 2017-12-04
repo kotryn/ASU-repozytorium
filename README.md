@@ -8,7 +8,4 @@
 * umożliwia przywracanie archiwalnych kopii;
 * wyświetla szczegóły historii danego pliku:
   * daty archiwizacji
-  * wszystkie kopie pliku
-  * rozmiary
-  * ...
 * usuwananie histori.

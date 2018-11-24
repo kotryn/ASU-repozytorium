@@ -1,6 +1,6 @@
-# ASU :octocat:
+# ASU
 
-### Zadanie 7 - repozytorium 
+### Zadanie 7 - repozytorium :octocat:
 #### Skrypt służący do tworzenia repozytorium plików. 
 
 * Ma możliwość operowania na pojedyńczych plikach oraz katalogach (z zawartocią); 
